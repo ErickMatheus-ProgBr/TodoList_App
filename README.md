@@ -23,4 +23,4 @@ JSON Serialization: Conversão de objetos Dart para facilitar o salvamento.
 
 Estruturas de pastas
 
-![foto](.donwload/Estrutura_das_pastas.png)
+![foto](Downloads/Estrutura_das_pastas.png)
