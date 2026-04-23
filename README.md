@@ -1,14 +1,14 @@
 # app_tarefas
 
-📝 To-Do List App (TaskMaster)
+## 📝 To-Do List App (TaskMaster)
 Um aplicativo de gerenciamento de tarefas desenvolvido em Flutter que permite organizar seu dia a dia em listas temáticas com persistência local de dados.
 
-🚀 Funcionalidades
-Criação de Listas: Organize suas tarefas por categorias (ex: Mercado, Trabalho, Estudos).
+## 🚀 Funcionalidades
+__Criação de Listas:__ Organize suas tarefas por categorias (ex: Mercado, Trabalho, Estudos).
 
-Checklist Reativo: Marque e desmarque tarefas com atualização em tempo real na interface.
+__Checklist Reativo:__ Marque e desmarque tarefas com atualização em tempo real na interface._
 
-Persistência Local: Seus dados não somem ao fechar o app! Tudo é salvo no dispositivo usando shared_preferences.
+__Persistência Local:__ Seus dados não somem ao fechar o app! Tudo é salvo no dispositivo usando shared_preferences.
 
 Exclusão de Itens: Remova tarefas individualmente para manter suas listas limpas.
 
