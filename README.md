@@ -37,4 +37,4 @@ Estruturas de pastas
 │   ├── item_lista_widget.dart  # O design de cada "pasta" da tela inicial
 │   └── item_tarefa_widget.dart # O design da linha com checkbox e lixeira
 └── *core/*                       # (Opcional) Para cores e estilos fixos do app
-    └── app_cores.dart
+    └── app_cores.dart 
