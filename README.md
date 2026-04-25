@@ -6,21 +6,21 @@ Um aplicativo de gerenciamento de tarefas desenvolvido em Flutter que permite or
 🚀 Funcionalidades
 Criação de Listas: Organize suas tarefas por categorias (ex: Mercado, Trabalho, Estudos).
 
-Checklist Reativo: Marque e desmarque tarefas com atualização em tempo real na interface.
+Checklist: Marque e desmarque tarefas com atualização em tempo real na interface.
 
-Persistência Local: Seus dados não somem ao fechar o app! Tudo é salvo no dispositivo usando shared_preferences.
+Persistência Local: Os dados não somem ao fechar o app! Tudo é salvo no Aplicativo usando shared_preferences.
 
-Exclusão de Itens: Remova tarefas individualmente para manter suas listas limpas.
+Exclusão de Itens na Lista: Remova tarefas individualmente para manter suas listas limpas.
 
 🛠️ Tecnologias Utilizadas
 
-Flutter & Dart: Framework e linguagem base.
+Flutter & Dart.
 
-Provider: Gerenciamento de estado global e lógica de negócio.
+Provider: Gerenciamento de estado global.
 
-Shared Preferences: Persistência de dados local (armazenamento de Strings JSON).
+Shared Preferences: Persistência de dados local.
 
-JSON Serialization: Conversão de objetos Dart para facilitar o salvamento.
+JSON.
 
 Estruturas de pastas
 
