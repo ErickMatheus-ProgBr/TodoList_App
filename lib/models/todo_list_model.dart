@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'tarefa_model.dart';
 
 class TodoListModel {

@@ -1,12 +1,13 @@
-import 'package:app_tarefas/main.dart';
-import 'package:app_tarefas/models/tarefa_model.dart';
 import 'package:app_tarefas/models/todo_list_model.dart';
 import 'package:app_tarefas/provider/todo_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:app_tarefas/theme/colors.dart';
 
+/// StatefulWidget: Usamos aqui porque temos um 'TextEditingController'
+/// que precisa ser criado e descartado pela própria tela.
 class TaskDetailsScreen extends StatefulWidget {
-  final TodoListModel todoList;
+  final TodoListModel todoList; // Recebe a lista que foi clicada na Dashboard
 
   const TaskDetailsScreen({super.key, required this.todoList});
 
@@ -15,29 +16,36 @@ class TaskDetailsScreen extends StatefulWidget {
 }
 
 class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
+  // Controlador para o campo de texto da nova tarefa
   final TextEditingController _taskController = TextEditingController();
 
+  /// Função interna para adicionar tarefa
   void _addNewTask() {
     if (_taskController.text.isNotEmpty) {
-      // PROVIDER: Em vez de usar setState local, chama o Provider
-      // Usar o 'read' porque é uma ação de clique de botão
+      // context.read: Dá uma ordem ao Provider para adicionar a tarefa na lista atual.
       context.read<TodoProvider>().addTask(widget.todoList, _taskController.text);
 
+      // Limpa o campo de texto após adicionar
       _taskController.clear();
-      // O setState sumiu daqui também!
-      // O notifyListeners() do Provider vai atualizar a tela sozinho.
+
+      // O notifyListeners() do Provider fará a tela atualizar automaticamente!
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.todoList.title), backgroundColor: Colors.amberAccent),
-      // CORREÇÃO 2: Removido o ; solto e adicionado um widget básico para teste
-      // Dentro do Widget build da TaskDetailsScreen
+      appBar: AppBar(
+        // Exibe o título da lista em letras maiúsculas
+        title: Text(
+          widget.todoList.title.toUpperCase(),
+          style: TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.grey, // Cor da barra superior
+      ),
       body: Column(
         children: [
-          // Parte de cima: Onde você digita e adiciona (ajuste conforme seu widget de input)
+          // CABEÇALHO: Campo de entrada e botão "+"
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -49,14 +57,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: _addNewTask, // Aquela função que já criamos
+                  icon: const Icon(Icons.add, color: AppColors.grayAppBar),
+                  onPressed: _addNewTask,
                 ),
               ],
             ),
           ),
 
-          // Parte de baixo: A lista de Checklist
+          // LISTA DE TAREFAS: Usa o 'watch' para monitorar mudanças no Provider
           Expanded(
             child:
                 context
@@ -72,23 +80,28 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       final tarefa = widget.todoList.tasks[index];
 
                       return ListTile(
+                        // CHECKBOX: Onde o usuário marca como concluído
                         leading: Checkbox(
                           value: tarefa.isCompleted,
                           onChanged: (bool? value) {
-                            // PROVIDER: Chama a função de marcar/desmarcar
-                            context.read<TodoProvider>().toggleTask(tarefa);
+                            // Envia para o Provider a tarefa e a lista para reorganizar o topo
+                            context.read<TodoProvider>().toggleTask(widget.todoList, tarefa);
                           },
                         ),
+                        // TÍTULO DA TAREFA: Fica riscado se estiver concluída
                         title: Text(
                           tarefa.title,
                           style: TextStyle(
-                            decoration: tarefa.isCompleted ? TextDecoration.lineThrough : null,
+                            decoration: tarefa.isCompleted
+                                ? TextDecoration
+                                      .lineThrough // Efeito de risco
+                                : null,
                           ),
                         ),
+                        // BOTÃO DE EXCLUIR TAREFA
                         trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: AppColors.delete),
                           onPressed: () {
-                            // Vamos criar essa função no Provider logo abaixo
                             context.read<TodoProvider>().removeTask(widget.todoList, index);
                           },
                         ),
@@ -101,12 +114,3 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     );
   }
 }
-
-/* 
-
-💡 Resumindo de forma simples
-State = dados que mudam na tela
-StatefulWidget = widget que pode mudars
-setState() = avisa o Flutter pra redesenhar
-
-*/

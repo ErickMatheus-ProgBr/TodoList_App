@@ -1,11 +1,10 @@
-import 'package:app_tarefas/main.dart';
-import 'package:app_tarefas/models/tarefa_model.dart';
-import 'package:app_tarefas/models/todo_list_model.dart';
 import 'package:app_tarefas/provider/todo_provider.dart';
 import 'package:app_tarefas/screens/task_details_screen.dart';
+import 'package:app_tarefas/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:app_tarefas/widgets/addListMain.dart';
 import 'package:provider/provider.dart';
+import 'package:app_tarefas/logExclusion/dialogueofexclusion.dart';
 
 class MainDashboard extends StatefulWidget {
   const MainDashboard({super.key});
@@ -32,7 +31,7 @@ class _MainDashboardState extends State<MainDashboard> {
         backgroundColor: Colors.black,
         title: Text(
           "Minhas Listas",
-          style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 25, color: AppColors.white, fontWeight: FontWeight.bold),
         ),
         titleSpacing: 0,
       ),
@@ -41,39 +40,43 @@ class _MainDashboardState extends State<MainDashboard> {
       // Se estiver vazia, mostramos uma mensagem amigável ao usuário.
       body: todoProvider.todoLists.isEmpty
           ? const Center(child: Text("Nenhuma lista encontrada. Clique em + para adicionar uma!"))
-          : ListView.builder(
-              // Usamos o comprimento (length) da lista que está guardada no Provider
-              itemCount: todoProvider.todoLists.length,
-              itemBuilder: (context, index) {
+          : Padding(
+              padding: const EdgeInsets.only(top: 18),
+              child: ListView.builder(
                 // Usamos o comprimento (length) da lista que está guardada no Provider
-                final listaAtual = todoProvider.todoLists[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 19, vertical: 8),
-                  elevation: 6,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(8)),
-                  child: ListTile(
-                    leading: const Icon(Icons.wysiwyg, color: Colors.black),
-                    title: Text(
-                      listaAtual.title,
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                        color: const Color.fromARGB(255, 121, 121, 121),
-                      ),
-                    ),
-                    trailing: const Icon(Icons.double_arrow_sharp, size: 16),
-                    onTap: () {
-                      // Navegação para a tela de detalhes enviando a lista selecionada
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TaskDetailsScreen(todoList: listaAtual),
+                itemCount: todoProvider.todoLists.length,
+                itemBuilder: (context, index) {
+                  // Usamos o comprimento (length) da lista que está guardada no Provider
+                  final listaAtual = todoProvider.todoLists[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(horizontal: 21, vertical: 11),
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(8)),
+                    child: ListTile(
+                      leading: const Icon(Icons.wysiwyg, color: Colors.black),
+                      title: Text(
+                        listaAtual.title,
+                        style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.blackColor,
                         ),
-                      );
-                    },
-                  ),
-                );
-              },
+                      ),
+                      trailing: const Icon(Icons.double_arrow_sharp, size: 16),
+                      onTap: () {
+                        // Navegação para a tela de detalhes enviando a lista selecionada
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TaskDetailsScreen(todoList: listaAtual),
+                          ),
+                        );
+                      },
+                      onLongPress: () => confirmExclusion(context, index),
+                    ),
+                  );
+                },
+              ),
             ),
 
       floatingActionButton: FloatingActionButton(
@@ -96,9 +99,10 @@ class _MainDashboardState extends State<MainDashboard> {
             },
           );
         },
-        backgroundColor: Colors.blue,
+
+        backgroundColor: AppColors.btnAddList,
         elevation: 10,
-        child: const Icon(Icons.add_circle_sharp, size: 40, color: Colors.white),
+        child: const Icon(Icons.add_circle_sharp, size: 40, color: AppColors.white),
       ),
     );
   }

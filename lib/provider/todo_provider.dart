@@ -5,23 +5,22 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TodoProvider extends ChangeNotifier {
-  // A lista agora mora aqui!
   final List<TodoListModel> _todoLists = [];
-
   List<TodoListModel> get todoLists => _todoLists;
 
   TodoProvider() {
     loadData();
   }
 
-  // 2. Salva a lista inteira no celular
-  Future<void> saveData() async {
+  // --- LÓGICA DE PERSISTÊNCIA (SALVAR/LER) ---
+
+  Future<void> _saveToPrefs() async {
     final prefs = await SharedPreferences.getInstance();
+    // Usaremos apenas uma chave padronizada para não dar erro
     String encodedData = jsonEncode(_todoLists.map((l) => l.toJson()).toList());
     await prefs.setString('user_todo_data', encodedData);
   }
 
-  // 3. Lê os dados salvos
   Future<void> loadData() async {
     final prefs = await SharedPreferences.getInstance();
     String? data = prefs.getString('user_todo_data');
@@ -33,40 +32,57 @@ class TodoProvider extends ChangeNotifier {
     }
   }
 
-  // 4. Em toda função que muda dados, chame o saveData()
+  // --- LÓGICA DE ORGANIZAÇÃO ---
+
+  void _moveToTop(int index) {
+    if (index > 0 && index < _todoLists.length) {
+      final lista = _todoLists.removeAt(index);
+      _todoLists.insert(0, lista);
+    }
+  }
+
+  // --- AÇÕES DO APP ---
+
+  // 1. Criar nova lista (Já entra no topo)
   void addList(String title) {
-    _todoLists.add(TodoListModel(title: title, tasks: []));
-    saveData(); // SALVA AQUI
+    _todoLists.insert(0, TodoListModel(title: title, tasks: []));
+    _saveToPrefs();
     notifyListeners();
   }
 
+  // 2. Adicionar tarefa e subir a lista para o topo
   void addTask(TodoListModel list, String taskTitle) {
+    int index = _todoLists.indexOf(list);
     list.tasks.add(TaskModel(title: taskTitle));
-    saveData(); // SALVA AQUI
+
+    if (index != -1) _moveToTop(index); // Sobe a lista que recebeu a tarefa
+
+    _saveToPrefs();
     notifyListeners();
   }
 
-  // Função para criar uma nova pasta (lista)
-  void addLis(String title) {
-    _todoLists.add(TodoListModel(title: title, tasks: []));
-    notifyListeners(); // Isso avisa as telas para se atualizarem!
-  }
-
-  // Dentro da classe TodoProvider
-  void removeTask(TodoListModel list, int index) {
-    list.tasks.removeAt(index);
-    notifyListeners(); // Isso faz a lista sumir da tela na hora!
-  }
-
-  // Função para adicionar tarefa dentro de uma lista específica
-  void addTas(TodoListModel list, String taskTitle) {
-    list.tasks.add(TaskModel(title: taskTitle));
-    notifyListeners();
-  }
-
-  // Função para marcar/desmarcar tarefa
-  void toggleTask(TaskModel task) {
+  // 3. Marcar/Desmarcar e subir para o topo
+  void toggleTask(TodoListModel list, TaskModel task) {
+    int index = _todoLists.indexOf(list);
     task.isCompleted = !task.isCompleted;
+
+    if (index != -1) _moveToTop(index); // Sobe a lista que foi interagida
+
+    _saveToPrefs();
+    notifyListeners();
+  }
+
+  // 4. Remover tarefa
+  void removeTask(TodoListModel list, int taskIndex) {
+    list.tasks.removeAt(taskIndex);
+    _saveToPrefs();
+    notifyListeners();
+  }
+
+  // 5. Remover lista inteira
+  void removeList(int index) {
+    _todoLists.removeAt(index);
+    _saveToPrefs();
     notifyListeners();
   }
 }

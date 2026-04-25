@@ -1,6 +1,6 @@
-# app_tarefas
+# APP_TAREFAS
 
-## 📝 To-Do List App (TaskMaster)
+## 📝 To-Do List App 
 Um aplicativo de gerenciamento de tarefas desenvolvido em Flutter que permite organizar seu dia a dia em listas temáticas com persistência local de dados.
 
 🚀 Funcionalidades
